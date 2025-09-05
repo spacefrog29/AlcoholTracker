@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcohol Unit Tracker v2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 120px;
+            flex: 1;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        
+        .calc-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .calc-section h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        button:hover {
+            background: #1e7e34;
+        }
+        
+        .calc-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .calc-btn:hover {
+            background: #e0a800;
+        }
+        
+        .export-btn {
+            background: #17a2b8;
+        }
+        
+        .export-btn:hover {
+            background: #138496;
+        }
+        
+        .reset-btn {
+            background: #dc3545;
+        }
+        
+        .reset-btn:hover {
+            background: #c82333;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background-color: #d4edda;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            min-width: 0;
+        }
+        
+        .stat-card.warning {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #155724;
+        }
+        
+        .stat-value.warning {
+            color: #721c24;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .warning-text {
+            color: #721c24;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 4px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .input-group {
+                min-width: auto;
+            }
+            
+            .button-group {
+                justify-content: center;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                text-align: center;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+                font-size: 14px;
+            }
+            
+            .delete-btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-section, .calc-section {
+                padding: 10px;
+            }
+            
+            th, td {
+                padding: 6px 3px;
+                font-size: 12px;
+            }
+            
+            .stat-value {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alcohol Unit Tracker</h1>
+        
+        <div class="input-section">
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date">
+                </div>
+                <div class="input-group">
+                    <label for="drinkName">Drink Name:</label>
+                    <input type="text" id="drinkName" placeholder="e.g. Pint of beer">
+                </div>
+                <div class="input-group">
+                    <label for="units">Units (if known):</label>
+                    <input type="number" id="units" step="0.1" placeholder="e.g. 2.3" min="0">
+                </div>
+            </div>
+            
+            <div class="calc-section">
+                <h3>OR Calculate from Volume & ABV:</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="volume">Volume (ml):</label>
+                        <input type="number" id="volume" step="1" placeholder="e.g. 175" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="abv">ABV (%):</label>
+                        <input type="number" id="abv" step="0.1" placeholder="e.g. 13" min="0">
+                    </div>
+                    <div class="button-group">
+                        <button class="calc-btn" onclick="calculateUnits()">Calculate Units</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="addDrink()">Add Drink</button>
+                <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
+                <button class="reset-btn" onclick="resetSession()">Reset Session</button>
+            </div>
+        </div>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card" id="todayCard">
+                <div class="stat-value" id="todayUnits">0</div>
+                <div class="stat-label">Today's Units</div>
+            </div>
+            <div class="stat-card" id="weekCard">
+                <div class="stat-value" id="weekUnits">0</div>
+                <div class="stat-label">This Week's Units</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgDaily">0</div>
+                <div class="stat-label">Avg Daily (7 days)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDrinks">0</div>
+                <div class="stat-label">Total Drinks</div>
+            </div>
+        </div>
+        
+        <div id="weeklyWarning" class="warning-text" style="display: none;">
+            ⚠️ You've exceeded the recommended weekly limit of 14 units!
+        </div>
+        
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Drink Name</th>
+                        <th>Units</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // *** REPLACE THESE WITH YOUR SUPABASE DETAILS ***
+        const SUPABASE_URL = 'https://sfsnhbdxqvzerrvpaxhj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmc25oYmR4cXZ6ZXJydnBheGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwODE3OTMsImV4cCI6MjA3MjY1Nzc5M30.b0T-kTofmI-86HGYwgXAaO6pYje57dCbzK5gIyhexfE';
+        
+        // Initialize Supabase client
+        let supabase;
+        let drinks = [];
+        let isLoading = false;
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                await loadDrinks();
+            } catch (error) {
+                console.error('Error initializing Supabase:', error);
+                alert('Error connecting to database. Please check your Supabase configuration.');
+            }
+        });
+        
+        // Set today's date as default
+        document.getElementById('date').valueAsDate = new Date();
+        
+        async function loadDrinks() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('alcohol_drinks')
+                    .select('*')
+                    .order('drink_date', { ascending: false });
+                
+                if (error) throw error;
+                
+                drinks = data.map(row => ({
+                    id: row.id,
+                    date: row.drink_date,
+                    name: row.drink_name,
+                    units: row.units
+                }));
+                
+                updateTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading drinks:', error);
+                alert('Error loading data: ' + error.message);
+            } finally {
+                isLoading = false;
+            }
+        }
+        
+        function calculateUnits() {
+            const vol = parseFloat(document.getElementById('volume').value);
+            const abv = parseFloat(document.getElementById('abv').value);
+            
+            if (isNaN(vol) || isNaN(abv) || vol <= 0 || abv <= 0) {
+                alert("Please enter valid volume and ABV.");
+                return;
+            }
+            
+            const units = (vol * abv) / 1000;
+            document.getElementById('units').value = units.toFixed(2);
+        }
+        
+        async function addDrink() {
+            const date = document.getElementById('date').value;
+            const name = document.getElementById('drinkName').value || "Unnamed drink";
+            let units = parseFloat(document.getElementById('units').value);
+            
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            
+            if (isNaN(units) || units <= 0) {
+                alert("Please enter units directly or calculate from volume & ABV.");
+                return;
+            }
+            
+            if (isLoading) {
+                alert('Please wait, still loading data...');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('alcohol_drinks')
+                    .insert([
+                        {
+                            drink_date: date,
+                            drink_name: name,
+                            units: units
+                        }
+                    ])
+                    .select();
+                
+                if (error) throw error;
+                
+                // Add to local array
+                const newDrink = {
+                    id: data[0].id,
+                    date: date,
+                    name: name,
+                    units: units
+                };
+                
+                drinks.unshift(newDrink);
+                
+                updateTable();
+                updateStats();
+                clearForm();
+                
+            } catch (error) {
+                console.error('Error adding drink:', error);
+                alert('Error saving drink: ' + error.message);
+            }
+        }
+        
+        async function deleteDrink(id) {
+            if (!confirm('Are you sure you want to delete this drink?')) {
+                return;
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('alcohol_drinks')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                drinks = drinks.filter(d => d.id !== id);
+                updateTable();
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error deleting drink:', error);
+                alert('Error deleting drink: ' + error.message);
+            }
+        }
+        
+        async function resetSession() {
+            if (!confirm("Clear all drinks? This will permanently delete all your data!")) {
+                return;
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('alcohol_drinks')
+                    .delete()
+                    .gte('id', 0); // Delete all records
+                
+                if (error) throw error;
+                
+                drinks = [];
+                updateTable();
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error resetting data:', error);
+                alert('Error clearing data: ' + error.message);
+            }
+        }
+        
+        function updateTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            drinks.forEach(drink => {
+                const row = tbody.insertRow();
+                const formattedDate = new Date(drink.date).toLocaleDateString('en-GB');
+                
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${drink.name}</td>
+                    <td>${drink.units.toFixed(1)}</td>
+                    <td><button class="delete-btn" onclick="deleteDrink(${drink.id})">Delete</button></td>
+                `;
+            });
+        }
+        
+        function updateStats() {
+            if (drinks.length === 0) {
+                document.getElementById('stats').style.display = 'none';
+                document.getElementById('weeklyWarning').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('stats').style.display = 'grid';
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayDrinks = drinks.filter(d => d.date === today);
+            const todayUnits = todayDrinks.reduce((sum, d) => sum + d.units, 0);
+            
+            // Calculate this week's units (last 7 days)
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const weekDrinks = drinks.filter(d => new Date(d.date) >= weekAgo);
+            const weekUnits = weekDrinks.reduce((sum, d) => sum + d.units, 0);
+            
+            // Average daily over last 7 days
+            const avgDaily = weekUnits / 7;
+            
+            document.getElementById('todayUnits').textContent = todayUnits.toFixed(1);
+            document.getElementById('weekUnits').textContent = weekUnits.toFixed(1);
+            document.getElementById('avgDaily').textContent = avgDaily.toFixed(1);
+            document.getElementById('totalDrinks').textContent = drinks.length;
+            
+            // Update styling based on limits
+            const todayCard = document.getElementById('todayCard');
+            const weekCard = document.getElementById('weekCard');
+            const weekValue = document.getElementById('weekUnits');
+            
+            if (weekUnits >= 14) {
+                weekCard.classList.add('warning');
+                weekValue.classList.add('warning');
+                document.getElementById('weeklyWarning').style.display = 'block';
+            } else {
+                weekCard.classList.remove('warning');
+                weekValue.classList.remove('warning');
+                document.getElementById('weeklyWarning').style.display = 'none';
+            }
+            
+            if (todayUnits >= 4) { // High daily amount
+                todayCard.classList.add('warning');
+                document.getElementById('todayUnits').classList.add('warning');
+            } else {
+                todayCard.classList.remove('warning');
+                document.getElementById('todayUnits').classList.remove('warning');
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('drinkName').value = '';
+            document.getElementById('units').value = '';
+            document.getElementById('volume').value = '';
+            document.getElementById('abv').value = '';
+            // Keep today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+        
+        function exportToCSV() {
+            if (drinks.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const headers = ['Date', 'Drink Name', 'Units'];
+            const csvContent = [
+                headers.join(','),
+                ...drinks.map(d => [
+                    d.date,
+                    `"${d.name}"`, // Quote the name in case it contains commas
+                    d.units
+                ].join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'alcohol_consumption.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Allow Enter key to add drink
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                addDrink();
+            }
+        });
+    </script>
+</body>
+</html>
